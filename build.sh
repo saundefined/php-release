@@ -15,6 +15,8 @@ RELEASE_VERSION=${RELEASE_VERSION:?"RELEASE_VERSION is not set"}
 CONFIGURE_AC=${CONFIGURE_AC:-"configure.ac"}
 MAKE_JOBS=${MAKE_JOBS:-`nproc`}
 TEST_JOBS=${TEST_JOBS:-`nproc`}
+GPG_KEY_FILE=/gpg.asc
+GPG_KEY_ID=${GPG_KEY_ID:?"GPG_KEY_ID is not set"}
 
 PHP_REPO_FETCH=${PHP_REPO_FETCH:-"https://github.com/php/php-src"}
 PHP_REPO_PUSH=${PHP_REPO_PUSH:-"git@github.com:php/php-src"}
@@ -48,6 +50,12 @@ echo "RELEASE_VERSION=${RELEASE_VERSION}"
 if [ ! -z "$RE2C_VERSION" ]; then
   echo "RE2C_VERSION=${RE2C_VERSION} (instead of distro version: $(re2c --version))"
 fi
+
+if test -f "$GPG_KEY_FILE"; then
+    gpg --import /gpg.asc 2>/dev/null
+    gpg --list-secret-keys
+fi
+
 echo "-------------------"
 
 # Update re2c
@@ -108,6 +116,13 @@ fi
 # Get going
 git config user.name "$COMMITTER_NAME"
 git config user.email "$COMMITTER_EMAIL"
+
+if test -f "$GPG_KEY_FILE"; and ! -z "$GPG_KEY_ID" ; then
+    git config user.signingKey "$GPG_KEY_ID"
+    git config commit.gpgsign true
+    git config tag.gpgsign true
+fi
+
 git remote set-url origin --push "${PHP_REPO_PUSH}"
 
 # Update NEWS

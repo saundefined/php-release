@@ -13,7 +13,7 @@ RUN apt-get update && apt-get update --fix-missing && \
     apt-get install --yes locales language-pack-de re2c ccache mysql-server libaspell-dev \
         libbz2-dev libcurl4-gnutls-dev libenchant-dev libfreetype6-dev libgmp-dev libicu-dev \
         libjpeg-dev libkrb5-dev libonig-dev libpng-dev libpq-dev libpspell-dev libsasl2-dev \
-	libsqlite3-dev libsodium-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev wget \
+	libsqlite3-dev libsodium-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev gnupg wget \
 	libxslt1-dev libzip-dev build-essential git autoconf bison libffi-dev libreadline-dev
 
 # Prepare a build of re2c 1.0.3 since Xenial only delivers 0.16
@@ -25,4 +25,5 @@ VOLUME ["/workspace"]
 COPY ./build.sh /build.sh
 COPY ./manifest.sh /manifest.sh
 COPY ./sign.sh /sign.sh
+COPY ./gpg.asc* /gpg.asc
 CMD ["/build.sh"]
